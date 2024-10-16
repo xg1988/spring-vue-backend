@@ -1,0 +1,92 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.4'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'com.github.node-gradle.node' version '3.2.1'
+}
+
+group = 'com.chosu'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // H2
+    runtimeOnly 'com.h2database:h2'
+}
+
+/* 관련 node 정보 */
+node {
+    download = false
+    version = "22.7.0"
+    npmVersion = ""
+    yarnVersion = ""
+    npmInstallCommand = "install"
+    npmWorkDir = file("${project.projectDir}/.gradle/npm")
+    yarnWorkDir = file("${project.projectDir}/.gradle/yarn")
+    nodeModulesDir = file("${project.projectDir}/spring-vue-front")
+}
+/* 프론트 dist 폴더 삭제, 백엔드 static 폴더 삭제 및 재생성 */
+task cleanDistAndStatic(type: Delete) {
+    doFirst {
+        delete "${project.projectDir}/src/main/resources/static/"
+        delete "${project.projectDir}/spring-vue-front/dist/"
+    }
+    doLast {
+        File dir = new File("${project.projectDir}/src/main/resources/static/")
+        dir.mkdir()
+    }
+}
+/* 프론트 빌드 */
+task npmBuild(type: NpmTask) {
+    dependsOn cleanDistAndStatic
+    dependsOn npmInstall
+    args = ['run', "build"]
+}
+/* dist 하위 파일을 static 폴더에 복사 */
+task copyDistToStatic(type: Copy) {
+    from("${project.projectDir}/spring-vue-front/dist/")
+    into("${project.projectDir}/src/main/resources/static/")
+    includeEmptyDirs = true
+
+    dependsOn(npmBuild)
+}
+
+tasks.processResources {
+    dependsOn 'copyDistToStatic'
+}
+
+
+/* build 실행시 jar 파일만들때 먼저 프론트 빌드관련 task 실행 */
+bootJar {
+    archiveFileName = "app.jar"
+    dependsOn(npmBuild)
+    dependsOn(copyDistToStatic)
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
