@@ -37,3 +37,4 @@ out/
 .vscode/
 
 /src/main/resource/static/
+/src/main/resources/static/

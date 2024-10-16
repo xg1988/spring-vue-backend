@@ -47,13 +47,13 @@ node {
     npmInstallCommand = "install"
     npmWorkDir = file("${project.projectDir}/.gradle/npm")
     yarnWorkDir = file("${project.projectDir}/.gradle/yarn")
-    nodeModulesDir = file("${project.projectDir}/spring-vue-front")
+    nodeModulesDir = file("${project.projectDir}/spring-vue-frontend")
 }
 /* 프론트 dist 폴더 삭제, 백엔드 static 폴더 삭제 및 재생성 */
 task cleanDistAndStatic(type: Delete) {
     doFirst {
         delete "${project.projectDir}/src/main/resources/static/"
-        delete "${project.projectDir}/spring-vue-front/dist/"
+        delete "${project.projectDir}/spring-vue-frontend/dist/"
     }
     doLast {
         File dir = new File("${project.projectDir}/src/main/resources/static/")
@@ -68,7 +68,7 @@ task npmBuild(type: NpmTask) {
 }
 /* dist 하위 파일을 static 폴더에 복사 */
 task copyDistToStatic(type: Copy) {
-    from("${project.projectDir}/spring-vue-front/dist/")
+    from("${project.projectDir}/spring-vue-frontend/dist/")
     into("${project.projectDir}/src/main/resources/static/")
     includeEmptyDirs = true
 

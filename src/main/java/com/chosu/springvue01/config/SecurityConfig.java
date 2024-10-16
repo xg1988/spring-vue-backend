@@ -27,6 +27,7 @@ public class SecurityConfig {
                             .requestMatchers("/index.html").permitAll()
                             .requestMatchers(PathRequest.toH2Console()).permitAll()
                             .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                            .requestMatchers("/assets/**", "/vite.svg").permitAll() // vite 추가
                             .anyRequest().authenticated();
                 })
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
