@@ -8,7 +8,17 @@ module.exports = {
         "**prettier**"
     ],
     rules: {
-        // override/add rules settings here, such as:
-        // 'vue/no-unused-vars': 'error'
-    }
+    'prettier/prettier': [
+      'error',
+      {
+        singleQuote: true,
+        semi: true,
+        tabWidth: 4,
+        trailingComma: 'none',
+        printWidth: 140,
+        bracketSpacing: true,
+        arrowParens: 'avoid',
+      },
+    ],
+  },
 }

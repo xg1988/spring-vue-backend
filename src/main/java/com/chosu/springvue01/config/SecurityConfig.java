@@ -25,10 +25,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry.requestMatchers("/", "/login/**").permitAll()
                             .requestMatchers("/index.html").permitAll()
+                            .requestMatchers("/assets/**").permitAll() // vite 추가
                             .requestMatchers(PathRequest.toH2Console()).permitAll()
                             .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                            .requestMatchers("/assets/**", "/vite.svg").permitAll() // vite 추가
-                            .anyRequest().authenticated();
+                            .requestMatchers("/api/**").authenticated()
+                            .anyRequest().permitAll();
                 })
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
                         httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
