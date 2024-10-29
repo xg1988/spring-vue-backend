@@ -38,3 +38,7 @@ out/
 
 /src/main/resource/static/
 /src/main/resources/static/
+
+/src/main/resources/application-jwt.yml
+/src/main/resources/application-oauth.yml
+/src/main/resources/application-oauth.yml.back

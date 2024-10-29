@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 @Slf4j
 public class CustomErrorController implements ErrorController {
-    @GetMapping("/error")
+    /*@GetMapping("/error")
     public String redirectRoot() {
+        log.info("error catched redirectRoot called!!");
         return "index.html";
-    }
+    }*/
 }
