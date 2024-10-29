@@ -42,3 +42,4 @@ out/
 /src/main/resources/application-jwt.yml
 /src/main/resources/application-oauth.yml
 /src/main/resources/application-oauth.yml.back
+/src/main/resources/application-oauth.yml.back2

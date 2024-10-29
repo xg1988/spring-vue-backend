@@ -1,6 +1,5 @@
 package com.chosu.springvue01.security.jwt.filter;
 
-import com.chosu.springvue01.config.SecurityConstants;
 import com.chosu.springvue01.domain.user.User;
 import com.chosu.springvue01.domain.user.repository.UserRepository;
 import com.chosu.springvue01.security.jwt.service.JwtService;
@@ -122,7 +121,11 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      */
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
-        log.info("checkAccessTokenAndAuthentication() 호출");
+        //log.info("checkAccessTokenAndAuthentication() 호출");
+        if(jwtService.extractAccessToken(request).isPresent()){
+            log.info("extractAccessToken() :{}", jwtService.extractAccessToken(request));
+        }
+
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
                 .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
@@ -164,14 +167,5 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    private boolean checkFilterExcludePath(String requestURI){
-        for (String uri: SecurityConstants.SECURITY_ALLOW_PATH_ARRAY){
-            if(uri.equals(requestURI)){
-                return true;
-            }
-        }
-        return false;
     }
 }

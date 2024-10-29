@@ -2,6 +2,7 @@ package com.chosu.springvue01.security.login.handler;
 
 import com.chosu.springvue01.domain.user.repository.UserRepository;
 import com.chosu.springvue01.security.jwt.service.JwtService;
+import com.chosu.springvue01.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final CookieUtil cookieUtil;
 
     @Value("${jwt.access.expiration}")
     private String accessTokenExpiration;
@@ -39,6 +41,9 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         log.info("로그인에 성공하였습니다. 이메일 : {}", email);
         log.info("로그인에 성공하였습니다. AccessToken : {}", accessToken);
         log.info("발급된 AccessToken 만료 기간 : {}", accessTokenExpiration);
+
+        response.addCookie(cookieUtil.addCookie("accessToken", accessToken));
+        response.addCookie(cookieUtil.addCookie("refreshToken", refreshToken));
     }
 
     private String extractUsername(Authentication authentication) {

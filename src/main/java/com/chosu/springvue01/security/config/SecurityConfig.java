@@ -1,4 +1,4 @@
-package com.chosu.springvue01.config;
+package com.chosu.springvue01.security.config;
 
 import com.chosu.springvue01.domain.user.repository.UserRepository;
 import com.chosu.springvue01.security.CustomAuthenticationEntryPoint;
@@ -11,6 +11,7 @@ import com.chosu.springvue01.security.login.service.LoginService;
 import com.chosu.springvue01.security.oauth2.handler.OAuth2LoginFailureHandler;
 import com.chosu.springvue01.security.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.chosu.springvue01.security.oauth2.service.CustomOAuth2UserService;
+import com.chosu.springvue01.util.CookieUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,7 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CookieUtil cookieUtil;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -60,11 +62,12 @@ public class SecurityConfig {
 
                 //.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
-                    authorizationManagerRequestMatcherRegistry.requestMatchers("/","/login", "/oauth/sign-up", "/main", "/signup").permitAll()
+                    authorizationManagerRequestMatcherRegistry.requestMatchers("/","/login", "/oauth/sign-up", "/main", "/sign-up").permitAll()
                             .requestMatchers("/index.html").permitAll()
                             .requestMatchers("/assets/**").permitAll() // vite 추가
                             .requestMatchers(PathRequest.toH2Console()).permitAll()
                             .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                            .requestMatchers("/vite.svg").permitAll()
                             //.requestMatchers("/**").authenticated()
                             .anyRequest().authenticated();
                 })
@@ -115,7 +118,7 @@ public class SecurityConfig {
      */
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, userRepository);
+        return new LoginSuccessHandler(jwtService, userRepository, cookieUtil);
     }
 
     /**

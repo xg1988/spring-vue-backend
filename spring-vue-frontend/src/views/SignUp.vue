@@ -6,33 +6,79 @@
         <h2>회원가입</h2>
 
         <!-- ID/Password 로그인 폼 -->
-        <form action="/login" method="post">
-            <label for="email">이메일</label>
-            <input type="email" id="email" name="email" placeholder="이메일을 입력하세요" required>
+        <div v-if="!isOAuth">
+        <label for="email">이메일</label>
+            <input v-model="email" type="email" id="email" name="email" placeholder="이메일을 입력하세요" required>
 
             <label for="password">비밀번호</label>
-            <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required minlength="6">
+            <input v-model="password" type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required minlength="6">
+        </div>
 
-            <button type="submit">로그인</button>
-            <span class="signup-link">회원가입</span><span class="signup-link">비밀번호 찾기</span>
-        </form>
+            <label for="nickname">닉네임</label>
+            <input v-model="nickname" type="text" id="nickname" name="nickname" placeholder="닉네임 입력하세요" required>
+
+            <button @click="signup()">회원가입</button>
+            <span class="signup-link">로그인으로</span>
 
         <!-- 구분선 -->
-        <div class="divider">또는</div>
+        <!--<div class="divider">또는</div>-->
 
         <!-- OAuth 로그인 버튼들 -->
-        <div class="oauth-buttons">
+        <!--<div class="oauth-buttons">
             <a href="/oauth2/authorization/google" class="google">Google로 회원가입</a>
             <a href="/oauth2/authorization/naver" class="naver">Naver으로 회원가입</a>
             <a href="/oauth2/authorization/kakao" class="kakao">Kakao로 회원가입</a>
-        </div>
+        </div>-->
     </div>
      </div>
 </template>
 
 <script>
+import axios from '../axios'; // Axios 인스턴스 가져오기
+
 export default {
-}
+  data() {
+    return {
+      email: '',
+      password: '',
+      nickname: '',
+      isOAuth: false
+    };
+  },
+  
+  created() {
+    const currentUrl = window.location.pathname;
+    console.log('currentUrl : ' + currentUrl)
+    if(currentUrl.includes('/oauth')){
+        this.isOAuth = true
+    }
+  },
+
+  methods: {
+    async signup() {
+      try {
+        const response = await axios.post('/sign-up', {
+          email: this.email,
+          password: this.password,
+          nickname: this.nickname,
+          isOAuth: ((this.isOAuth)? 'Y': 'N'),
+        }
+        );
+        if(response.data === '회원가입 성공'){
+            alert('회원가입이 완료 되었습니다!')
+            this.$router.push('/login?signUpYn=Y'); // 홈 페이지로 리디렉션
+        }
+
+        // 로그인 후 원하는 페이지로 이동
+        //this.$router.push('/login'); // 홈 페이지로 리디렉션
+
+      } catch (error) {
+        console.error('회원가입 실패:', error);
+        alert('회원가입 실패했습니다. 다시 시도해주세요.');
+      }
+    }
+  }
+};
 </script>
 
 <style>

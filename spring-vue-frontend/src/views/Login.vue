@@ -3,6 +3,7 @@
 
  
   <div class="login-container">
+        <span v-if="this.signUpYn == 'Y'" class="result-message">회원가입이 완료 되었습니다. <br/>다시 로그인 해주세요.</span>
         <h2>로그인</h2>
 
         <!-- ID/Password 로그인 폼 -->
@@ -13,7 +14,7 @@
             <input v-model="password"type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required minlength="6">
 
             <button type="submit" @click="login()">로그인</button>
-            <span class="signup-link">회원가입</span><span class="signup-link">비밀번호 찾기</span>
+            <span class="signup-link" @click="goSignUp()">회원가입</span><span class="signup-link">비밀번호 찾기</span>
 
         <!-- 구분선 -->
         <div class="divider">또는</div>
@@ -35,10 +36,14 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      signUpYn: 'N'
     };
   },
   methods: {
+    goSignUp(){
+        this.$router.push('/sign-up'); // 홈 페이지로 리디렉션
+    },
     async login() {
       try {
         const response = await axios.post('/login', {
@@ -59,7 +64,14 @@ export default {
         console.error('로그인 실패:', error);
         alert('로그인에 실패했습니다. 다시 시도해주세요.');
       }
+    },
+    updateSignUpYn(){
+        const urlParams = new URLSearchParams(window.location.search);
+        this.signUpYn = urlParams.get('signUpYn'); // URL에서 파라미터 가져오기
     }
+  },
+  mounted(){
+    this.updateSignUpYn()
   }
 };
 </script>
@@ -214,5 +226,12 @@ export default {
             margin-top: 10px;
             color: #007bff;
             text-decoration: none;
+        }
+        .result-message{
+            color: red;
+            text-decoration: none;
+            font-size: 0.98rem;
+            margin-bottom: 10px;
+            font-weight: 800;
         }
 </style>

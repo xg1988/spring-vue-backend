@@ -5,13 +5,16 @@ import MainView from '../views/Main.vue'
 import LoginView from '../views/Login.vue'
 import HomeView from '../views/Home.vue'
 import SignUpView from '../views/SignUp.vue'
+import SettingsView from '../views/Settings.vue'
 
 // 라우터 설계
 const routes = [
     { path: '/', component:HomeView},
     { path: '/main', component:MainView},
     { path: '/login', component:LoginView},
-    { path: '/oauth/sign-up', component:SignUpView}
+    { path: '/oauth/sign-up', component:SignUpView},
+    { path: '/sign-up', component:SignUpView},
+    { path: '/settings', component:SettingsView}
 ]
 
 // 라우터 생성

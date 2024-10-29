@@ -1,4 +1,5 @@
 <template>
+  <LoadingSpinner :isLoading="isLoading" />
   <header class="app-header">
     <div class="app-title">공통 서비스 템플릿</div>
     <div class="icon-container">
@@ -9,8 +10,14 @@
 </template>
 
 <script>
+import LoadingSpinner from './LoadingSpinner.vue';
+
 export default {
   name: 'Header',
+  components: {
+    LoadingSpinner
+  },
+
 };
 </script>
 

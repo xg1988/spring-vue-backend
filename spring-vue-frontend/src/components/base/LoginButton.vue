@@ -10,8 +10,7 @@ export default {
   methods: {
     handleLogin() {
       // 로그인 처리 로직을 여기에 추가하세요.
-      alert('로그인 버튼이 클릭되었습니다!');
-      location.href = "/login"
+      this.$router.push('/login')
     },
   },
 };
